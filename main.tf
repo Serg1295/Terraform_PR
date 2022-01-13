@@ -192,7 +192,7 @@ resource "aws_instance" "EC2_Ruby" {
   vpc_security_group_ids = [aws_security_group.SG_EC2_Ruby.id]
   private_ip             = cidrhost(aws_subnet.Public-A.cidr_block, 6)
   key_name               = data.aws_key_pair.Frankfurt_key.key_name
-  #user_data              = file("UserData.sh")
+  user_data              = file("UserData.sh")
   tags = {
     Name = "EC2_Ruby"
   }
