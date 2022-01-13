@@ -10,20 +10,6 @@ resource "aws_vpc" "VPC" {
     Name = "VPC_MAIN"
   }
 }
-resource "aws_default_vpc" "Default_VPC" {
-  tags = {
-    Name = "Default_VPC"
-  }
-}
-resource "aws_default_subnet" "default_az1" {
-  availability_zone = data.aws_availability_zones.available.names[0]
-}
-resource "aws_default_subnet" "default_az2" {
-  availability_zone = data.aws_availability_zones.available.names[1]
-}
-resource "aws_default_subnet" "default_az3" {
-  availability_zone = data.aws_availability_zones.available.names[2]
-}
 resource "aws_internet_gateway" "IGW" { #--internet getaway for vpc
   vpc_id = aws_vpc.VPC.id
 
@@ -94,35 +80,9 @@ resource "aws_route_table" "VPC_Public_Route" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.IGW.id
   }
-  route {
-    cidr_block                = data.aws_vpc.default.cidr_block
-    vpc_peering_connection_id = aws_vpc_peering_connection.Peer_to_Def.id
-  }
   tags = {
     Name = "VPC_Public_Route"
   }
-}
-resource "aws_route_table" "VPC_Private_Route" {
-  vpc_id = aws_vpc.VPC.id
-  route {
-    cidr_block                = data.aws_vpc.default.cidr_block
-    vpc_peering_connection_id = aws_vpc_peering_connection.Peer_to_Def.id
-  }
-  tags = {
-    Name = "VPC_Private_Route"
-  }
-}
-resource "aws_route_table_association" "Association_Private_A" {
-  subnet_id      = aws_subnet.Private-A.id
-  route_table_id = aws_route_table.VPC_Private_Route.id
-}
-resource "aws_route_table_association" "Association_Private_B" {
-  subnet_id      = aws_subnet.Private-B.id
-  route_table_id = aws_route_table.VPC_Private_Route.id
-}
-resource "aws_route_table_association" "Association_Private_C" {
-  subnet_id      = aws_subnet.Private-C.id
-  route_table_id = aws_route_table.VPC_Private_Route.id
 }
 resource "aws_route_table_association" "Association_Public_A" {
   subnet_id      = aws_subnet.Public-A.id
@@ -135,30 +95,6 @@ resource "aws_route_table_association" "Association_Public_B" {
 resource "aws_route_table_association" "Association_Public_C" {
   subnet_id      = aws_subnet.Public-C.id
   route_table_id = aws_route_table.VPC_Public_Route.id
-}
-resource "aws_route_table_association" "Association_Default_az1" {
-  subnet_id      = aws_default_subnet.default_az1.id
-  route_table_id = aws_default_vpc.Default_VPC.default_route_table_id
-}
-resource "aws_route_table_association" "Association_Default_az2" {
-  subnet_id      = aws_default_subnet.default_az2.id
-  route_table_id = aws_default_vpc.Default_VPC.default_route_table_id
-}
-resource "aws_route_table_association" "Association_Default_az3" {
-  subnet_id      = aws_default_subnet.default_az3.id
-  route_table_id = aws_default_vpc.Default_VPC.default_route_table_id
-}
-#---Vpc peering VPC_MAIN -> default VPC ----------------------
-resource "aws_vpc_peering_connection" "Peer_to_Def" {
-  peer_vpc_id = data.aws_vpc.default.id
-  vpc_id      = aws_vpc.VPC.id
-  auto_accept = true
-}
-
-resource "aws_route" "Default_Rout" {
-  route_table_id            = aws_default_vpc.Default_VPC.default_route_table_id
-  destination_cidr_block    = aws_vpc.VPC.cidr_block
-  vpc_peering_connection_id = aws_vpc_peering_connection.Peer_to_Def.id
 }
 #-------------------------------------------------------------------
 resource "aws_security_group" "SG_EC2_Ruby" {
