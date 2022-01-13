@@ -195,6 +195,7 @@ resource "aws_instance" "EC2_Ruby" {
   connection {
     type        = "ssh"
     user        = "ubuntu"
+    host        = self.public_ip
     private_key = file("~/.ssh/key.pem")
   }
 
