@@ -1,3 +1,4 @@
+#!/bin/bash
 sleep 30
 su -l ubuntu
 touch test.txt
