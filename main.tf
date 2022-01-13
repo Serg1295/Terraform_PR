@@ -196,7 +196,7 @@ resource "aws_instance" "EC2_Ruby" {
     type        = "ssh"
     user        = "ubuntu"
     host        = self.public_ip
-    private_key = file("~/.ssh/key.pem")
+    private_key = file("/home/ubuntu/.ssh/key.pem")
   }
 
   provisioner "remote-exec" {
