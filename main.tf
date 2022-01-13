@@ -186,13 +186,24 @@ resource "aws_security_group" "SG_EC2_Ruby" {
   }
 }
 resource "aws_instance" "EC2_Ruby" {
-  ami                    = split(":",local.artifact_id[0])[1]
+  ami                    = split(":", local.artifact_id[0])[1]
   instance_type          = "t2.micro"
   subnet_id              = aws_subnet.Public-A.id
   vpc_security_group_ids = [aws_security_group.SG_EC2_Ruby.id]
   private_ip             = cidrhost(aws_subnet.Public-A.cidr_block, 6)
   key_name               = data.aws_key_pair.Frankfurt_key.key_name
-  user_data              = file("UserData.sh")
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    private_key = file("~/.ssh/key.pem")
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sleep 20",
+      "rails s -p 3000 -b 0.0.0.0 -d"
+    ]
+  }
   tags = {
     Name = "EC2_Ruby"
   }
