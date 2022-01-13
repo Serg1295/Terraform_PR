@@ -121,16 +121,22 @@ resource "aws_security_group" "SG_EC2_Ruby" {
     Name = "SG_EC2_Ruby"
   }
 }
+resource "aws_eip" "E_IP" {
+  instance = aws_instance.EC2_Ruby.id
+  vpc      = true
+}
 resource "aws_instance" "EC2_Ruby" {
   ami                    = split(":", local.artifact_id[0])[1]
   instance_type          = "t2.micro"
   subnet_id              = aws_subnet.Public-A.id
   vpc_security_group_ids = [aws_security_group.SG_EC2_Ruby.id]
-  private_ip             = cidrhost(aws_subnet.Public-A.cidr_block, 6)
   key_name               = data.aws_key_pair.Frankfurt_key.key_name
   user_data              = file("UserData.sh")
   tags = {
     Name = "EC2_Ruby"
+  }
+  lifecycle {
+    create_before_destroy = true
   }
 }
 #----------------------------------------------------------------------
