@@ -192,30 +192,7 @@ resource "aws_instance" "EC2_Ruby" {
   vpc_security_group_ids = [aws_security_group.SG_EC2_Ruby.id]
   private_ip             = cidrhost(aws_subnet.Public-A.cidr_block, 6)
   key_name               = data.aws_key_pair.Frankfurt_key.key_name
-  connection {
-    type        = "ssh"
-    user        = "ubuntu"
-    host        = self.public_ip
-    private_key = file("/home/ubuntu/.ssh/key.pem")
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sleep 20",
-      "rails s -p 3000 -b 0.0.0.0 -d"
-    ]
-  }
-  tags = {
-    Name = "EC2_Ruby"
-  }
-}
-#----------------------------------------------------------------------
-resource "aws_db_subnet_group" "DB_Subnet_Group" {
-  subnet_ids = [aws_subnet.Private-A.id, aws_subnet.Private-B.id]
-
-  tags = {
-    Name = "DB_subnet_group"
-  }
+  user_data = file("UserData.sh")
 }
 resource "aws_security_group" "SG_DB_MySQL" {
   name   = "SG_DB_MySQl"
