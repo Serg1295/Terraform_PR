@@ -10,12 +10,15 @@ data "aws_ami" "latest_ubuntu" {
     values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-*"]
   }
 }
+data "aws_iam_policy" "AmazonSSmReadOnlyAccess" {
+  arn = "arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess"
+}
 data "aws_key_pair" "Frankfurt_key" {}
 locals {
-  local_data = jsondecode(file("manifest.json"))
+  local_data  = jsondecode(file("manifest.json"))
   artifact_id = [for art in local.local_data.builds : art.artifact_id]
 }
 
 output "show_locals" {
-  value = split(":",local.artifact_id[0])[1]
+  value = split(":", local.artifact_id[0])[1]
 }
