@@ -166,6 +166,7 @@ resource "aws_instance" "EC2_Ruby" {
   lifecycle {
     create_before_destroy = true
   }
+  depends_on = [aws_db_instance.MySQL_DB, ]
 }
 #----------------------------------------------------------------------
 resource "aws_db_subnet_group" "DB_Subnet_Group" {
