@@ -8,3 +8,4 @@ echo "export RAILS_ENV=production" >> /home/ubuntu/.bashrc
 su - ubuntu -c "cd /var/www/P161App && rake db:create"
 su - ubuntu -c "cd /var/www/P161App && sudo chown -R ubuntu:ubuntu ."
 su - ubuntu -c "cd /var/www/P161App && rails assets:precompile"
+su - ubuntu -c "sudo service nginx restart"
