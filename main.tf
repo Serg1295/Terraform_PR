@@ -102,7 +102,7 @@ resource "aws_security_group" "SG_EC2_Ruby" {
   vpc_id = aws_vpc.VPC.id
 
   dynamic "ingress" {
-    for_each = ["3000", "80", "22"]
+    for_each = ["80", "22"]
     content {
       from_port   = ingress.value
       to_port     = ingress.value
