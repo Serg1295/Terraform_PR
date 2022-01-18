@@ -215,7 +215,7 @@ resource "aws_db_instance" "MySQL_DB" {
 resource "random_password" "db_password" {
   length           = 16
   special          = true
-  override_special = "%_@"
+  override_special = "%_"
 }
 resource "aws_ssm_parameter" "DB_Secret" {
   name        = "DB_PASSWORD"
