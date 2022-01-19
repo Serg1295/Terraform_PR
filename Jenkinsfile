@@ -2,8 +2,13 @@ pipeline {
     agent any
 
     stages {
+        stage("Clean Workspace") {
+            steps {
+                cleanWs()
+            }
+        }
         stage("Packer_Build") {
-            steps{
+            steps {
                 sh '''
                     aws s3 cp s3://sergo.manifest/Packer/manifest.json ./manifest.json
                     terraform init
