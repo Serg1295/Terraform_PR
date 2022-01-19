@@ -2,11 +2,6 @@ pipeline {
     agent any
 
     stages {
-        stage("Clean Workspace") {
-            steps {
-                cleanWs()
-            }
-        }
         stage("Packer_Build") {
             steps {
                 sh '''
@@ -14,6 +9,11 @@ pipeline {
                     terraform init
                     terraform apply -auto-approve -no-color
                 '''
+            }
+        }
+        stage("Clean Workspace") {
+            steps {
+                cleanWs()
             }
         }
     }
